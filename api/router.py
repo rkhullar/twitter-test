@@ -1,28 +1,11 @@
-from fastapi import APIRouter, Security, Request
-# from fastapi.security import OAuth2AuthorizationCodeBearer
+from fastapi import APIRouter, Request
+from fastapi.responses import RedirectResponse
 from authlib.integrations.starlette_client import OAuth
-from starlette.config import Config
-from starlette.requests import Request as StarletteRequest
 from .config import Settings
 
 router = APIRouter()
 settings = Settings()
 
-
-'''
-class TwitterOAuth2(OAuth2AuthorizationCodeBearer):
-    auth_endpoint: str = 'https://twitter.com/i/oauth2/authorize'
-    token_endpoint: str = 'https://api.twitter.com/2/oauth2/token'
-
-    def __init__(self, scopes: list[str]):
-        super().__init__(
-            authorizationUrl=self.auth_endpoint,
-            tokenUrl=self.token_endpoint,
-            scopes={scope: scope for scope in scopes}
-        )
-'''
-
-# auth_scheme = TwitterOAuth2(scopes=settings.twitter_scopes)
 
 oauth = OAuth()
 oauth.register(
@@ -38,16 +21,32 @@ oauth.register(
 )
 
 
-@router.get('/login/twitter')
-async def login_via_google(request: StarletteRequest):
+@router.get('/login/twitter', include_in_schema=False)
+async def login_via_google(request: Request):
     redirect_uri = request.url_for('auth_via_twitter')
     return await oauth.twitter.authorize_redirect(request, redirect_uri)
 
 
-@router.get('/auth/twitter')
-async def auth_via_twitter(request: StarletteRequest):
-    token = await oauth.twitter.authorize_access_token(request)
-    return token
+@router.get('/auth/twitter', include_in_schema=False)
+async def auth_via_twitter(request: Request):
+    token_data = await oauth.twitter.authorize_access_token(request)
+    for key, value in token_data.items():
+        request.session[key] = value
+    print('*'*100)
+    print('inside auth')
+    print(token_data)
+    print('*'*100)
+    docs_uri = request.url_for('swagger_ui_html')
+    return RedirectResponse(docs_uri)
+
+
+@router.get('/debug/session')
+async def debug_session(request: Request):
+    print('*'*100)
+    print('inside debug session')
+    print(request.session)
+    print('*'*100)
+    return request.session
 
 
 @router.get('/hello-world')

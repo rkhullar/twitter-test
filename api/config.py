@@ -6,6 +6,7 @@ from pydantic_settings import BaseSettings
 class ProjectSettings(BaseSettings):
     environment: str = os.environ['ENVIRONMENT']
     reload_fastapi: bool = 'RELOAD_FASTAPI' in os.environ
+    authlib_secret: str = os.environ['AUTHLIB_SECRET']
 
 
 class NetworkSettings(BaseSettings):
