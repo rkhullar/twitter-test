@@ -32,20 +32,12 @@ async def auth_via_twitter(request: Request):
     token_data = await oauth.twitter.authorize_access_token(request)
     for key, value in token_data.items():
         request.session[key] = value
-    print('*'*100)
-    print('inside auth')
-    print(token_data)
-    print('*'*100)
     docs_uri = request.url_for('swagger_ui_html')
     return RedirectResponse(docs_uri)
 
 
 @router.get('/debug/session')
 async def debug_session(request: Request):
-    print('*'*100)
-    print('inside debug session')
-    print(request.session)
-    print('*'*100)
     return request.session
 
 
