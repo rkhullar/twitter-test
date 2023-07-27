@@ -1,9 +1,12 @@
+from typing import Annotated
+
 from authlib.integrations.starlette_client import OAuth
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Body, Request
 from fastapi.responses import RedirectResponse
 
 from .config import Settings
 from .depends import ReadTokenData
+from .schema.message import SendDirectMessage
 from .schema.user import TwitterTokenData, TwitterUserData
 from .twitter import TwitterAPIClient
 
@@ -50,22 +53,34 @@ async def debug_token(token_data: ReadTokenData):
     return token_data
 
 
-@router.post('test/refresh', response_model=dict)
-async def write_tweet(token_data: ReadTokenData):
+@router.post('/test/refresh', response_model=dict)
+async def refresh_token(token_data: ReadTokenData):
     pass
 
 
-@router.get('/test/user', response_model=TwitterUserData)
+@router.get('/user/me', response_model=TwitterUserData)
 async def read_user(token_data: ReadTokenData):
+    # https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference
     response_data = await twitter_client.request(method='get', url='/users/me', auth_data=token_data)
     return response_data['data']
 
 
-@router.post('test/tweet', response_model=dict)
-async def write_tweet(token_data: ReadTokenData):
-    pass
+@router.get('/user/lookup', response_model=dict)
+async def lookup_user(token_data: ReadTokenData, username: str):
+    # https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference
+    response_data = await twitter_client.request(method='get', url=f'/users/by/username/{username}', auth_data=token_data)
+    return response_data
 
 
-@router.post('test/direct-message', response_model=dict)
-async def send_direct_message(token_data: ReadTokenData):
-    pass
+@router.post('/test/tweet', response_model=dict)
+async def write_tweet(token_data: ReadTokenData, text: Annotated[str, Body()]):
+    # https://developer.twitter.com/en/docs/twitter-api/tweets/manage-tweets/api-reference
+    response_data = await twitter_client.request(method='post', url='/tweets', auth_data=token_data, json={'text': text})
+    return response_data['data']
+
+
+@router.post('/test/direct-message', response_model=dict)
+async def send_direct_message(token_data: ReadTokenData, payload: SendDirectMessage):
+    # https://developer.twitter.com/en/docs/twitter-api/direct-messages/manage/api-reference
+    response_data = await twitter_client.request(method='post', url='/dm_conversations/with/:participant_id/messages', auth_data=token_data, json={'text': payload.message})
+    return response_data
