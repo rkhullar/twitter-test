@@ -6,7 +6,6 @@ from fastapi.responses import RedirectResponse
 
 from .config import Settings
 from .depends import ReadTokenData
-from .schema.message import SendDirectMessage
 from .schema.user import TwitterTokenData, TwitterUserData
 from .twitter import TwitterAPIClient
 
