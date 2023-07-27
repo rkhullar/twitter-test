@@ -14,3 +14,9 @@ class TwitterTokenData(BaseModel):
     @property
     def scopes(self) -> set[str]:
         return set(self.scope.split(' '))
+
+
+class TwitterUserData(BaseModel):
+    id: int
+    name: str
+    username: str

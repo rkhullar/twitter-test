@@ -3,12 +3,13 @@ from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 
 from .config import Settings
-from .depends import ReadAccessToken, ReadTokenData
-from .util import BearerAuth, async_httpx
+from .depends import ReadTokenData
+from .schema.user import TwitterTokenData, TwitterUserData
+from .twitter import TwitterAPIClient
 
 router = APIRouter()
 settings = Settings()
-
+twitter_client = TwitterAPIClient()
 
 oauth = OAuth()
 oauth.register(
@@ -25,7 +26,7 @@ oauth.register(
 
 
 @router.get('/login/twitter', include_in_schema=False)
-async def login_via_google(request: Request):
+async def login_via_twitter(request: Request):
     redirect_uri = request.url_for('auth_via_twitter')
     return await oauth.twitter.authorize_redirect(request, redirect_uri)
 
@@ -44,9 +45,27 @@ async def debug_session(request: Request):
     return request.session
 
 
-@router.get('/hello-world')
-async def hello_world(token_data: ReadTokenData):
-    response = await async_httpx(method='get', url='https://api.twitter.com/2/users/me', auth=BearerAuth(token_data.access_token))
-    response.raise_for_status()
-    response_data = response.json()
-    return dict(response_data=response_data['data'], token_data=token_data)
+@router.get('/debug/token', response_model=TwitterTokenData)
+async def debug_token(token_data: ReadTokenData):
+    return token_data
+
+
+@router.post('test/refresh', response_model=dict)
+async def write_tweet(token_data: ReadTokenData):
+    pass
+
+
+@router.get('/test/user', response_model=TwitterUserData)
+async def read_user(token_data: ReadTokenData):
+    response_data = await twitter_client.request(method='get', url='/users/me', auth_data=token_data)
+    return response_data['data']
+
+
+@router.post('test/tweet', response_model=dict)
+async def write_tweet(token_data: ReadTokenData):
+    pass
+
+
+@router.post('test/direct-message', response_model=dict)
+async def send_direct_message(token_data: ReadTokenData):
+    pass
