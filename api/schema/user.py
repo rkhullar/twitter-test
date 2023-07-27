@@ -17,6 +17,6 @@ class TwitterTokenData(BaseModel):
 
 
 class TwitterUserData(BaseModel):
-    id: int
+    id: str  # NOTE: really an int but twitter returns as a string to avoid issues on the client
     name: str
     username: str
