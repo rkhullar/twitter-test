@@ -1,7 +1,7 @@
+from fastapi.openapi.models import APIKeyIn, SecuritySchemeType
 from fastapi.security.base import SecurityBase, SecurityBaseModel
-from starlette.requests import Request
-from fastapi.openapi.models import SecuritySchemeType, APIKeyIn
 from pydantic import Field
+from starlette.requests import Request
 
 
 class CookieAuthModel(SecurityBaseModel):

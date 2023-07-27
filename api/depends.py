@@ -1,6 +1,8 @@
-from fastapi import HTTPException, status, Security
-from starlette.requests import Request
 from typing import Annotated
+
+from fastapi import HTTPException, Security, status
+from starlette.requests import Request
+
 from .schema.user import TwitterTokenData
 
 

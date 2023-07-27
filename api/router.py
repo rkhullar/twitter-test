@@ -1,9 +1,10 @@
+from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
-from authlib.integrations.starlette_client import OAuth
+
 from .config import Settings
-from .depends import ReadTokenData, ReadAccessToken
-from .util import async_httpx, BearerAuth
+from .depends import ReadAccessToken, ReadTokenData
+from .util import BearerAuth, async_httpx
 
 router = APIRouter()
 settings = Settings()

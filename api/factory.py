@@ -1,9 +1,8 @@
 from fastapi import FastAPI
+from starlette.middleware.sessions import SessionMiddleware
 
 from .config import Settings
 from .router import router as api_router
-
-from starlette.middleware.sessions import SessionMiddleware
 
 openapi_description = """
 [login/twitter](/login/twitter)
