@@ -2,6 +2,8 @@ from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 from authlib.integrations.starlette_client import OAuth
 from .config import Settings
+from .depends import ReadTokenData, ReadAccessToken
+from .util import async_httpx, BearerAuth
 
 router = APIRouter()
 settings = Settings()
@@ -42,5 +44,8 @@ async def debug_session(request: Request):
 
 
 @router.get('/hello-world')
-async def hello_world():
-    return dict(message='hello world')
+async def hello_world(token_data: ReadTokenData):
+    response = await async_httpx(method='get', url='https://api.twitter.com/2/users/me', auth=BearerAuth(token_data.access_token))
+    response.raise_for_status()
+    response_data = response.json()
+    return dict(response_data=response_data['data'], token_data=token_data)

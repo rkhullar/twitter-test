@@ -5,16 +5,10 @@ from .router import router as api_router
 
 from starlette.middleware.sessions import SessionMiddleware
 
-d = """
+openapi_description = """
 [login/twitter](/login/twitter)
 """
 
-d2 = """
-<script>
-alert('hello world');
-</script>
-<button>login</button>
-"""
 
 def create_app(settings: Settings) -> FastAPI:
     app = FastAPI(
@@ -24,7 +18,7 @@ def create_app(settings: Settings) -> FastAPI:
         #     'usePkceWithAuthorizationCodeGrant': True,
         #     'scopes': ' '.join(settings.twitter_scopes)
         # }
-        description=d2
+        description=openapi_description
     )
     app.add_middleware(SessionMiddleware, secret_key=settings.authlib_secret)
     app.include_router(api_router)
