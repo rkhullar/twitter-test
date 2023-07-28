@@ -35,6 +35,9 @@ Unfortunately the free tier for Twitter app development has serious limitations.
 user's data and tweeting are supported. Reading users via username and direct messages are not offered in free tier. And
 reading the user's profile is rate limited at 25 requests per 24 hours per user.
 
+#### Tier Comparison
+- https://developer.twitter.com/en/portal/products
+
 ### Potential Future Plans
 
 #### Identity Provider
