@@ -8,7 +8,6 @@ from .config import Settings
 from .depends import ReadTokenData
 from .schema.user import TwitterTokenData, TwitterUserData
 from .twitter import TwitterAPIClient
-from .util import async_httpx
 
 router = APIRouter()
 settings = Settings()
