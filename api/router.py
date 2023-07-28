@@ -67,6 +67,7 @@ async def refresh_token(token_data: ReadTokenData, request: Request):
 
 @router.get('/user/me', response_model=TwitterUserData)
 async def read_user(token_data: ReadTokenData):
+    # NOTE: free tier rate limited to 25 requests per 24 hours per user
     # https://developer.twitter.com/en/docs/twitter-api/users/lookup/api-reference
     response_data = await twitter_client.request(method='get', url='/users/me', auth_data=token_data)
     return response_data['data']
