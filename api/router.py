@@ -54,12 +54,14 @@ async def debug_token(token_data: ReadTokenData):
 
 
 @router.post('/test/refresh')
-async def refresh_token(token_data: ReadTokenData):
-    response_data = await twitter_client.request(method='post', url='/oauth2/token', auth_data=token_data, data={
+async def refresh_token(token_data: ReadTokenData, request: Request):
+    response_data = await twitter_client.request(method='post', url='/oauth2/token', data={
         'refresh_token': token_data.refresh_token,
         'grant_type': 'refresh_token',
         'client_id': settings.twitter_client_id
     })
+    for key, value in response_data.items():
+        request.session[key] = value
     return response_data
 
 
