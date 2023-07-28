@@ -6,7 +6,7 @@ to create endpoints and handle login.
 
 ### Twitter App Config
 - type: native (public)
-- app permissions: read (minimal since it apples to oauth1)
+- app permissions: read (minimal since it only applies to oauth1)
 - website url: `http://twitter-test-local.{domain}:8000`
 - allowed callbacks or redirects:
   - `http://twitter-test-local.{domain}:8000/auth/twitter`
