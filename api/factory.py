@@ -10,7 +10,7 @@ from .config import Settings
 from .router import router as api_router
 
 openapi_description = """
-[login/twitter](/login/twitter)
+[/login/twitter](/login/twitter)
 """
 
 

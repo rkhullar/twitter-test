@@ -16,7 +16,6 @@ class NetworkSettings(BaseSettings):
 
 class TwitterSettings(BaseSettings):
     twitter_client_id: str = os.environ['TWITTER_CLIENT_ID']
-    twitter_client_secret: str = os.environ['TWITTER_CLIENT_SECRET']
     twitter_scopes: list[str] = ['users.read', 'offline.access', 'tweet.read', 'tweet.write']
 
 
