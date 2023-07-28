@@ -53,7 +53,7 @@ async def debug_token(token_data: ReadTokenData):
     return token_data
 
 
-@router.post('/test/refresh')
+@router.post('/test/refresh', response_model=TwitterTokenData)
 async def refresh_token(token_data: ReadTokenData, request: Request):
     response_data = await twitter_client.request(method='post', url='/oauth2/token', data={
         'refresh_token': token_data.refresh_token,
@@ -62,7 +62,7 @@ async def refresh_token(token_data: ReadTokenData, request: Request):
     })
     for key, value in response_data.items():
         request.session[key] = value
-    return response_data
+    return TwitterTokenData(**response_data)
 
 
 @router.get('/user/me', response_model=TwitterUserData)

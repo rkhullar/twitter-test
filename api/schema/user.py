@@ -9,7 +9,7 @@ class TwitterTokenData(BaseModel):
     access_token: str
     scope: str
     refresh_token: str
-    expires_at: int
+    expires_at: int | None = None  # NOTE: not include for refresh
 
     @property
     def scopes(self) -> set[str]:
