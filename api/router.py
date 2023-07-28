@@ -54,6 +54,7 @@ async def debug_token(token_data: ReadTokenData):
 
 @router.post('/test/refresh', response_model=TwitterTokenData)
 async def refresh_token(token_data: ReadTokenData, request: Request):
+    # NOTE: this endpoint call should not have any auth headers
     response_data = await twitter_client.request(method='post', url='/oauth2/token', data={
         'refresh_token': token_data.refresh_token,
         'grant_type': 'refresh_token',
