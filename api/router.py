@@ -8,6 +8,7 @@ from .config import Settings
 from .depends import ReadTokenData
 from .schema.user import TwitterTokenData, TwitterUserData
 from .twitter import TwitterAPIClient
+from .util import async_httpx
 
 router = APIRouter()
 settings = Settings()
@@ -52,9 +53,14 @@ async def debug_token(token_data: ReadTokenData):
     return token_data
 
 
-@router.post('/test/refresh', response_model=dict)
+@router.post('/test/refresh')
 async def refresh_token(token_data: ReadTokenData):
-    pass
+    response_data = await twitter_client.request(method='post', url='/oauth2/token', auth_data=token_data, data={
+        'refresh_token': token_data.refresh_token,
+        'grant_type': 'refresh_token',
+        'client_id': settings.twitter_client_id
+    })
+    return response_data
 
 
 @router.get('/user/me', response_model=TwitterUserData)
